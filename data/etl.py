@@ -1,28 +1,27 @@
 import sys
 import utility.util as ut
 
-def run(train_csv_file_name):
+def run(train_csv_filename, etl_train_csv_filename):
     """
     Implementation of the ETL pipeline
-    :param train_csv_file_name: The name of the train csv file
+    :param train_csv_filename: The name of the train csv file
+    :param etl_train_csv_filename: The name of the output csv file after performing ETL
     """
 
-    train_df = ut.read_csv(train_csv_file_name)
+    train_df = ut.read_csv(train_csv_filename)
 
     train_df = ut.one_hot_encode(train_df, 'intent')
 
-    train_df.to_csv('train.csv', index=False)
+    train_df.to_csv(etl_train_csv_filename, index=False)
 
 def main():
     """
-    Point of entry (Takes 1 argument)
+    Point of entry (Takes 2 argument)
     """
 
-    if len(sys.argv) == 2:
-        train_csv_file_name = sys.argv[1]
-
-        run(train_csv_file_name)
-
+    if len(sys.argv) == 3:
+        train_csv_filename, etl_train_csv_filename = sys.argv[1:]
+        run(train_csv_filename)
     else:
         print('Please provide the training CSV file with the following columns: \'query\', \'intent\''\
               '\n\nExample: python -m data.etl chatbot_train.csv')
