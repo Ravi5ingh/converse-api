@@ -23,8 +23,10 @@ def main():
         train_csv_filename, etl_train_csv_filename = sys.argv[1:]
         run(train_csv_filename)
     else:
-        print('Please provide the training CSV file with the following columns: \'query\', \'intent\''\
-              '\n\nExample: python -m data.etl chatbot_train.csv')
+        print('Please provide 2 arguments for the ETL process' \
+              '\nArgument 1: Input csv file'\
+              '\nArgument 2: Name of output csv file'\
+              '\n\nExample: python -m data.etl chatbot_train.csv chatbot_train.csv')
 
 if __name__ == '__main__':
     main()
