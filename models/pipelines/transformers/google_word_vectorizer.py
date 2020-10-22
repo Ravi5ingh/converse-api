@@ -23,7 +23,7 @@ class GoogleWordVectorizer(te.BaseEstimator):
         i = 0
         total = len(messages)
         for message in messages:
-            words = self.__tokenize_tweet__(message)
+            words = self.__tokenize_query__(message)
             word_vectors = []
             for word in words:
                 vector, success = ut.try_word2vec(word)
@@ -44,6 +44,9 @@ class GoogleWordVectorizer(te.BaseEstimator):
         return np.asarray(ret_val)
 
     def fit(self, messages):
+        """
+        Necessary to comply with the template
+        """
         pass
 
     def transform(self, messages):
@@ -60,7 +63,7 @@ class GoogleWordVectorizer(te.BaseEstimator):
         i = 0
         total = len(messages)
         for message in messages:
-            words = self.__tokenize_tweet__(message)
+            words = self.__tokenize_query__(message)
             word_vectors = []
             for word in words:
                 vector, success = ut.try_word2vec(word)
@@ -80,15 +83,15 @@ class GoogleWordVectorizer(te.BaseEstimator):
         print('\n')
         return np.asarray(ret_val)
 
-    def __tokenize_tweet__(self, tweet):
+    def __tokenize_query__(self, query):
         """
-        Take the raw tweet string and tokenize to a standardized string array
-        :param tweet: The raw tweet
-        :return: The tokenized tweet
+        Take the raw query string and tokenize to a standardized string array
+        :param query: The raw query
+        :return: The tokenized query
         """
 
         return (pt.pipe
                 | nl.normalize_text
                 | nl.tokenize_text
                 | nl.remove_stopwords
-                | nl.lemmatize_text)(tweet)
+                | nl.lemmatize_text)(query)
