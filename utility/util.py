@@ -1,5 +1,81 @@
 import pandas as pd
 import numpy as np
+import os as os
+import requests as rq
+import pickle as pkl
+import gensim as gs
+import sys as sy
+
+def try_word2vec(word):
+    """
+    Gets the word vector for the given work based on Google's trained model.
+    1. Tries the cache first
+    2. Loads the model between 0 and 1 times per run
+    3. Updates cache
+    :param word: The word to vectorize
+    :return: The word vector
+    """
+
+    global google_word2vec_model
+    global word2vec_cache
+    model_filename = __file__[0:__file__.rindex('\\')] + '\\..\\models\\nl\\GoogleWord2VecModel.bin'
+    cache_filename = __file__[0:__file__.rindex('\\')] + '\\..\\models\\nl\\word2vec_cache.pkl'
+
+    # Check cache
+    if word2vec_cache is None:
+        if os.path.exists(cache_filename):
+            word2vec_cache = read_pkl(cache_filename)
+        else:
+            word2vec_cache = {}
+            to_pkl(word2vec_cache, cache_filename)
+
+    # Try cache
+    if word in word2vec_cache:
+        return word2vec_cache[word], word2vec_cache[word] is not None
+    # Use Google's model
+    else:
+        if google_word2vec_model is None:
+            print('Need to load Google word2vec Model')
+
+            # Check if model exists, download otherwise
+            if not os.path.exists(model_filename):
+                print('Google word2vec model not found. Will download (~3.5GB)...')
+                download_gdrive_file('1kzCpXqZ_EILFAfK4G96QZBrjtezxjMiO', model_filename) # Hard-coded file id
+                print('Done downloading Google word2vec model')
+
+            print('Loading Google word2vec model...')
+            google_word2vec_model = gs.models.KeyedVectors.load_word2vec_format(model_filename, binary=True)
+            print('Done loading Google word2vec model')
+
+        try:
+            word2vec_cache[word] = google_word2vec_model[word]
+            to_pkl(word2vec_cache, cache_filename)
+            return word2vec_cache[word], True
+        except:
+            word2vec_cache[word] = None
+            to_pkl(word2vec_cache, cache_filename)
+            return word2vec_cache[word], False
+
+def read_pkl(file_name):
+    """
+    De-serializes a pickle file into an object and returns it
+    :param file_name: The name of the pickle file
+    :return: The object that is de-serialized
+    """
+
+    with open(file_name, 'rb') as file:
+        return pkl.load(file)
+
+def to_pkl(obj, file_name):
+    """
+    Save the given object as a pickle file to the given file name
+    :param obj: The object to serialize
+    :param file_name: The file name to save it to
+    :return: returns the same object back
+    """
+
+    with open(file_name, 'wb') as file:
+        pkl.dump(obj, file)
 
 def one_hot_encode(df, column_name, prefix = '', replace_column = True, insert_to_end = False):
     """
@@ -40,6 +116,27 @@ def read_csv(file_path, verbose=True):
 
     ret_val = pd.read_csv(file_path)
     return reduce_mem_usage(ret_val, verbose)
+
+def download_gdrive_file(file_id, output_file_path):
+    """
+    Download a file from Google Drive given its file id
+    (Source: https://github.com/nsadawi/Download-Large-File-From-Google-Drive-Using-Python)
+    :param file_id: The file id
+    :param output_file_path: The path of the output file
+    """
+
+    URL = "https://docs.google.com/uc?export=download"
+
+    session = rq.Session()
+
+    response = session.get(URL, params = { 'id' : file_id }, stream = True)
+    token = __get_confirm_token__(response)
+
+    if token:
+        params = { 'id' : file_id, 'confirm' : token }
+        response = session.get(URL, params = params, stream = True)
+
+    __save_response_content__(response, output_file_path)
 
 def reduce_mem_usage(df, verbose=True):
     """
@@ -89,3 +186,45 @@ def reduce_mem_usage(df, verbose=True):
             )
         )
     return df
+
+#region Private
+
+def __get_confirm_token__(response):
+    """
+    Get a confirmation token from Google Drive (that says I'm ok with not scanning for viruses)
+    :param response: The HTTP response object
+    :return: The token
+    """
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            return value
+
+    return None
+
+def __save_response_content__(response, output_file_name):
+    """
+    Given an HTTP response object and a output file name, save the content to the file
+    :param response: The HTTP response object
+    :param output_file_name: The path of the output file
+    """
+
+    CHUNK_SIZE = 32768
+    file_size = int(response.headers.get('Content-Length')) if response.headers.get('Content-Length') else None
+
+    with open(output_file_name, "wb") as f:
+        i = 1
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk:
+                mb_sofar = CHUNK_SIZE * i / 1024 / 1024
+                if file_size:
+                    percentage = (CHUNK_SIZE * i / file_size * 100)
+                    sy.stdout.write('\r' + '[                                                  ]'
+                                     .replace(' ', ':', int(percentage / 2)) + ' ' + str(
+                        min(int(percentage), 100)) + '% (' + str(round(mb_sofar, 2)) + 'MB)')
+                else:
+                    sy.stdout.write('\r' + 'Unknown file size. ' + str(round(mb_sofar, 2)) + 'MB downloaded')
+                f.write(chunk)
+                i += 1
+    print('')
+
+#endregion
