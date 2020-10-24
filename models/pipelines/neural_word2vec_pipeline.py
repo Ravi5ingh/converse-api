@@ -18,7 +18,8 @@ class NeuralWord2VecPipeline:
         :param train_csv: The CSV file with the training data
         """
 
-        self.__train__ = ut.read_csv(train_csv)
+        self.__train_df__ = ut.read_csv(train_csv)
+        self.__target_columns__ = [col for col in self.__train_df__.columns if col not in ['query']]
 
     def init_fit_eval(self):
         """
@@ -39,7 +40,7 @@ class NeuralWord2VecPipeline:
         raw_predictions = self.__pipeline__.predict([query])
         predictions = {}
         i = 0
-        for category in gl.disaster_response_target_columns:
+        for category in self.__target_columns__:
             predictions[category] = raw_predictions[0][i]
             i += 1
 
@@ -53,8 +54,8 @@ class NeuralWord2VecPipeline:
 
         print('Create Neural Word2Vec Pipeline...')
 
-        X = self.__train__['query'].values
-        Y = self.__train__[gl.disaster_response_target_columns].values
+        X = self.__train_df__['query'].values
+        Y = self.__train_df__[self.__target_columns__].values
 
         x_train, x_test, y_train, y_test = ms.train_test_split(X, Y, test_size=0.25)
 
@@ -80,10 +81,10 @@ class NeuralWord2VecPipeline:
         y_pred = np.array(y_pred).T
 
         # Print confusion matrix for each category
-        for i in range(0, len(gl.disaster_response_target_columns)):
+        for i in range(0, len(self.__target_columns__)):
 
             try:
-                print('Confusion Matrix for ' + str(gl.disaster_response_target_columns[i]))
+                print('Confusion Matrix for ' + str(self.__target_columns__[i]))
                 conf_matrix = me.confusion_matrix(y_test[i], y_pred[i])
                 print(me.confusion_matrix(y_test[i], y_pred[i]))
                 if len(conf_matrix) > 1:
