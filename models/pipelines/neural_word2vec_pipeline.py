@@ -12,9 +12,13 @@ class NeuralWord2VecPipeline:
     training to the output categories using Neural Networks
     """
 
-    def __init__(self, disaster_db_file, disaster_table_name):
+    def __init__(self, train_csv):
+        """
+        .ctor
+        :param train_csv: The CSV file with the training data
+        """
 
-        self.__disaster__ = ut.read_db(disaster_db_file, disaster_table_name)
+        self.__train__ = ut.read_csv(train_csv)
 
     def init_fit_eval(self):
         """
@@ -32,10 +36,11 @@ class NeuralWord2VecPipeline:
         :return: The classifications for each concerned category
         """
 
+        raw_predictions = self.__pipeline__.predict([tweet])
         predictions = {}
         i = 0
         for category in gl.disaster_response_target_columns:
-            predictions[category] = self.__pipeline__.predict([tweet])[0][i]
+            predictions[category] = raw_predictions[0][i]
             i += 1
 
         return predictions
@@ -48,8 +53,8 @@ class NeuralWord2VecPipeline:
 
         print('Create Neural Word2Vec Pipeline...')
 
-        X = self.__disaster__['message'].values
-        Y = self.__disaster__[gl.disaster_response_target_columns].values
+        X = self.__train__['query'].values
+        Y = self.__train__[gl.disaster_response_target_columns].values
 
         x_train, x_test, y_train, y_test = ms.train_test_split(X, Y, test_size=0.25)
 
