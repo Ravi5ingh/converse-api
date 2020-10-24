@@ -8,7 +8,7 @@ import numpy as np
 
 class NeuralWord2VecPipeline:
     """
-    This class represents the pipeline that houses models that work by vectorizing the tweets using Word2Vec and then
+    This class represents the pipeline that houses models that work by vectorizing the queries using Word2Vec and then
     training to the output categories using Neural Networks
     """
 
@@ -29,14 +29,14 @@ class NeuralWord2VecPipeline:
 
         self.__pipeline__.fit(x_train, y_train)
 
-    def predict(self, tweet):
+    def predict(self, query):
         """
-        Classify the tweet in terms of the categories concerned
-        :param tweet: The raw tweet
+        Classify the query in terms of the categories concerned
+        :param query: The raw query
         :return: The classifications for each concerned category
         """
 
-        raw_predictions = self.__pipeline__.predict([tweet])
+        raw_predictions = self.__pipeline__.predict([query])
         predictions = {}
         i = 0
         for category in gl.disaster_response_target_columns:
