@@ -4,7 +4,6 @@ import sklearn.model_selection as ms
 import sklearn.neural_network as nn
 import sklearn.metrics as me
 import models.pipelines.transformers.google_word_vectorizer as go
-import global_variables as gl
 import numpy as np
 
 class NeuralWord2VecPipeline:
@@ -22,18 +21,9 @@ class NeuralWord2VecPipeline:
         Build a pipeline and fit it with GridSearchCV
         """
 
-        pipeline, x_train, x_test, y_train, y_test = self.__build_pipeline__()
+        self.__pipeline__, x_train, x_test, y_train, y_test = self.__build_pipeline__()
 
-        self.__perform_gridsearch__(
-            pipeline,
-            x_train,
-            x_test,
-            y_train,
-            y_test,
-            parameters={
-                'clf__solver': ['sgd', 'lbfgs']
-            }
-        )
+        self.__pipeline__.fit(x_train, y_train)
 
     def predict(self, tweet):
         """
@@ -45,7 +35,7 @@ class NeuralWord2VecPipeline:
         predictions = {}
         i = 0
         for category in gl.disaster_response_target_columns:
-            predictions[category] = self.__grid_searcher__.predict([tweet])[0][i]
+            predictions[category] = self.__pipeline__.predict([tweet])[0][i]
             i += 1
 
         return predictions
@@ -73,34 +63,6 @@ class NeuralWord2VecPipeline:
         x_test,\
         y_train,\
         y_test
-
-    def __perform_gridsearch__(self, pipeline, x_train, x_test, y_train, y_test, parameters):
-        """
-        Perform grid search on training data, with the provided pipeline and the grid search parameters
-        :param pipeline: The pipeline
-        :param x_train: X Train
-        :param x_test: X Test
-        :param y_train: Y Train
-        :param y_test: Y Test
-        :param parameters: Grid Search Parameters
-        """
-
-        self.__grid_searcher__ = ms.GridSearchCV(pipeline, param_grid=parameters, n_jobs=-1)
-
-        self.__grid_searcher__.fit(x_train, y_train)
-
-        y_pred = self.__grid_searcher__.predict(x_test)
-
-        try:
-            self.__print_summary__(y_test, y_pred)
-        except:
-            print('An unexpected error occurred while trying to print summary. Carrying on...')
-
-        print('Performed grid search. Accuracy: ' + str(self.__get_accuracy__(y_test, y_pred)))
-
-        best_parameters = self.__grid_searcher__.best_estimator_.get_params()
-        for param_name in sorted(parameters.keys()):
-            print("\t%s: %r" % (param_name, best_parameters[param_name]))
 
     def __print_summary__(self, y_test, y_pred):
         """
