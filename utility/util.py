@@ -187,6 +187,14 @@ def reduce_mem_usage(df, verbose=True):
         )
     return df
 
+#region Properties
+
+google_word2vec_model = None
+
+word2vec_cache = None
+
+#endregion
+
 #region Private
 
 def __get_confirm_token__(response):
