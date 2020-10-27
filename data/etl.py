@@ -10,7 +10,7 @@ def run(train_csv_filename, etl_train_csv_filename):
 
     train_df = ut.read_csv(train_csv_filename)
 
-    train_df = ut.one_hot_encode(train_df, 'intent')
+    train_df = ut.one_hot_encode(train_df, 'intent', prefix='is')
 
     train_df.to_csv(etl_train_csv_filename, index=False)
 
@@ -21,7 +21,7 @@ def main():
 
     if len(sys.argv) == 3:
         train_csv_filename, etl_train_csv_filename = sys.argv[1:]
-        run(train_csv_filename)
+        run(train_csv_filename, etl_train_csv_filename)
     else:
         print('Please provide 2 arguments for the ETL process' \
               '\nArgument 1: Input csv file'\
