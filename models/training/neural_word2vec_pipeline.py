@@ -3,7 +3,7 @@ import sklearn.pipeline as pi
 import sklearn.model_selection as ms
 import sklearn.neural_network as nn
 import sklearn.metrics as me
-import models.pipelines.transformers.google_word_vectorizer as go
+import models.training.transformers.google_word_vectorizer as go
 import numpy as np
 
 class NeuralWord2VecPipeline:

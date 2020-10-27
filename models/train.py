@@ -1,5 +1,5 @@
 import sys
-import models.pipelines.ensemble_word2vec_classifier as ec
+import models.training.ensemble_word2vec_classifier as ec
 import utility.util as ut
 
 def fit(train_csv):
