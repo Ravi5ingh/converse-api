@@ -1,4 +1,7 @@
 import utility.util as ut
+import sklearn.neural_network as nn
+import models.nl.processor as nl
+import pipetools as pt
 
 class EnsembleWord2VecClassifier:
     """
@@ -18,8 +21,42 @@ class EnsembleWord2VecClassifier:
         Fit the model
         """
 
+        X, Y = self.__vectorize__()
+
+
     def predict(self, text):
         """
         Given a piece of raw text, infer the intent of the user
         :return: The intent code
         """
+
+    def __vectorize__(self):
+        """
+        Vectorizes the one-hot-encoded training data
+        :return: The vectorized trainable data (X, Y)
+        """
+
+        X = []
+        Y = []
+
+        for index, row in self.__train_df__.iterrows():
+            for word in self.__tokenize_text__(row['query']):
+                vector, success = ut.try_word2vec(word)
+                if success:
+                    X.append(vector)
+                    Y.append(row[row.columns[1:]])
+
+        return X, Y
+
+    def __tokenize_text__(self, text):
+        """
+        Take the raw text string and tokenize to a standardized string array
+        :param text: The raw text
+        :return: The tokenized text
+        """
+
+        return (pt.pipe
+                | nl.normalize_text
+                | nl.tokenize_text
+                | nl.remove_stopwords
+                | nl.lemmatize_text)(text)
