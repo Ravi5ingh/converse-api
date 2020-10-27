@@ -5,15 +5,52 @@ import requests as rq
 import pickle as pkl
 import gensim as gs
 import sys as sy
+import sqlalchemy as sq
+
+def read_db(database_filename, table_name):
+    """
+    Read a db file and return it as a dataframe
+    :param database_filename: The DB file path
+    :param table_name: The table name
+    :return: The dataframe
+    """
+
+    engine = sq.create_engine('sqlite:///' + database_filename)
+    return pd.read_sql(table_name, con=engine)
+
+def to_db(df, database_filename, table_name, index = False):
+    """
+    Save a data frame as a SQLite DB file to the given location with the given table name
+    :param df: The data frame to save
+    :param database_filename: The DB file to create (NOTE: Will be replaced if it exists)
+    :param index: (Optional, Default: False) Whether or not to create an index column in the saved table
+    :param table_name: The name of the table to contain the data frame data
+    """
+
+    # If the DB file exists, delete it
+    if os.path.exists(database_filename):
+        os.remove(database_filename)
+
+    # Save data to an sqlite db
+    engine = sq.create_engine('sqlite:///' + database_filename)
+    df.to_sql(table_name, engine, index=index)
+
+def widen_df_display():
+    """
+    Widens the way dataframes are printed (setting lifetime is runtime)
+    """
+
+    pd.set_option('display.width', 3000)
+    pd.set_option('display.max_columns', 100)
 
 def try_word2vec(word):
     """
     Gets the word vector for the given work based on Google's trained model.
     1. Tries the cache first
-    2. Loads the model between 0 and 1 times per run
+    2. Loads the model between 0 and 1 times per run (Will download it automatically if necessary)
     3. Updates cache
     :param word: The word to vectorize
-    :return: The word vector
+    :return: The (word vector, boolean for success/failure)
     """
 
     global google_word2vec_model

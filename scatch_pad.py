@@ -10,9 +10,10 @@ import utility.util as ut
 #                                      max_iter=10))
 #         ])
 
-vv, success = ut.try_word2vec('car')
+ut.widen_df_display()
 
-if success:
-    print(vv)
-else:
-    print('couldnt vectorize car')
+dialogue = ut.read_csv(r'D:\Ravi\Lab\Chatbot_Training\archive\Ubuntu-dialogue-corpus\dialogueText_196.csv')
+
+print(dialogue.head())
+
+ut.to_db(dialogue, 'dialogueText_196.db', 'Dialogue')
