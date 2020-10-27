@@ -1,0 +1,37 @@
+query,is_credit_limit,is_fraud,is_freeze_card
+what is my credit limit,1,0,0
+can you please increase my credit limit,1,0,0
+can you increase my credit limit,1,0,0
+increase my credit limit,1,0,0
+more money,1,0,0
+can you please give me more money,1,0,0
+can i have more money,1,0,0
+how can i increase my credit limit,1,0,0
+how can i get more money,1,0,0
+can i borrow more money,1,0,0
+i would like more money,1,0,0
+i would like a larger credit limit please,1,0,0
+can you please freeze my card,0,0,1
+please freeze my card,0,0,1
+i would like to freeze my card,0,0,1
+could you freez my card please,0,0,1
+hi i have lost my card,0,0,1
+i need to freeze my card,0,0,1
+could you please lock my card,0,0,1
+please lock my card,0,0,1
+could you lock my card please,0,0,1
+can you please stop my card,0,0,1
+i need to freeze my account please,0,0,1
+hi i have to freeze my account,0,0,1
+hi have to stop my account,0,0,1
+please freeze my account,0,0,1
+i have lost my card and I need to freeze it,0,0,1
+i have to stop my account please,0,0,1
+hi i have a suspicious transaction on my card,0,1,0
+i don't recognize this transaction,0,1,0
+someone is using my card,0,1,0
+i think i have been a victim of fraud,0,1,0
+there has been fraud with my account,0,1,0
+someone has stole my account,0,1,0
+someone has committed fraud with my account,0,1,0
+i think there has been fraud,0,1,0

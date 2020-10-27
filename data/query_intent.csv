@@ -1,0 +1,37 @@
+query,intent
+what is my credit limit,credit_limit
+can you please increase my credit limit,credit_limit
+can you increase my credit limit,credit_limit
+increase my credit limit,credit_limit
+more money,credit_limit
+can you please give me more money,credit_limit
+can i have more money,credit_limit
+how can i increase my credit limit,credit_limit
+how can i get more money,credit_limit
+can i borrow more money,credit_limit
+i would like more money,credit_limit
+i would like a larger credit limit please,credit_limit
+can you please freeze my card,freeze_card
+please freeze my card,freeze_card
+i would like to freeze my card,freeze_card
+could you freez my card please,freeze_card
+hi i have lost my card,freeze_card
+i need to freeze my card,freeze_card
+could you please lock my card,freeze_card
+please lock my card,freeze_card
+could you lock my card please,freeze_card
+can you please stop my card,freeze_card
+i need to freeze my account please,freeze_card
+hi i have to freeze my account,freeze_card
+hi have to stop my account,freeze_card
+please freeze my account,freeze_card
+i have lost my card and I need to freeze it,freeze_card
+i have to stop my account please,freeze_card
+hi i have a suspicious transaction on my card,fraud
+i don't recognize this transaction,fraud
+someone is using my card,fraud
+i think i have been a victim of fraud,fraud
+there has been fraud with my account,fraud
+someone has stole my account,fraud
+someone has committed fraud with my account,fraud
+i think there has been fraud,fraud
