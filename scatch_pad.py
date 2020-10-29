@@ -1,19 +1,41 @@
 import utility.util as ut
-# import sklearn.pipeline as pi
-# import models.pipelines.transformers.google_word_vectorizer as go
-# import sklearn.neural_network as nn
-#
-# ss = pi.Pipeline([
-#             ('SINGH', go.GoogleWordVectorizer()),
-#             ('clf', nn.MLPClassifier(hidden_layer_sizes=(3),
-#                                      random_state=1,
-#                                      max_iter=10))
-#         ])
+import models.training.ensemble_word2vec_classifier as ec
+import pandas as pd
+import numpy as np
+import sklearn.neural_network as nn
 
 ut.widen_df_display()
 
-dialogue = ut.read_csv(r'D:\Ravi\Lab\Chatbot_Training\archive\Ubuntu-dialogue-corpus\dialogueText_196.csv')
+# X = []
+# avg = np.average(
+#     [np.array([1, 2, 3, 4]),
+#     np.array([1, 2, 3, 4]),
+#     np.array([1, 2, 3, 4])],
+#     axis=0
+# )
+# credit_vect, s = ut.try_word2vec('credit')
+#
+# ut.whats(X)
+# ut.whats(credit_vect)
+# ut.whats(avg)
 
-print(dialogue.head())
+# clf = ec.EnsembleWord2VecClassifier('models/train.csv')
+#
+# clf.fit()
 
-ut.to_db(dialogue, 'dialogueText_196.db', 'Dialogue')
+# X = np.arange(33000).reshape(110,300)
+# Y = np.zeros(330).reshape(110,3)
+#
+# clf = nn.MLPClassifier(hidden_layer_sizes=(10),
+#                        random_state=1,
+#                        max_iter=1000)
+#
+# clf.fit(X, Y)
+
+classifier = ec.EnsembleWord2VecClassifier('models/train.csv')
+
+classifier.fit()
+
+# train = ut.read_csv('models/train.csv')
+#
+# print(train['is_credit_limit'])

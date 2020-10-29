@@ -2,6 +2,7 @@ import utility.util as ut
 import sklearn.neural_network as nn
 import models.nl.processor as nl
 import pipetools as pt
+import numpy as np
 
 class EnsembleWord2VecClassifier:
     """
@@ -23,6 +24,14 @@ class EnsembleWord2VecClassifier:
 
         X, Y = self.__vectorize__()
 
+        clf = nn.MLPClassifier(hidden_layer_sizes=(2),
+                                     random_state=1,
+                                     max_iter=10000)
+
+        X = np.array(X)
+        Y = np.array(Y, dtype=np.float)
+
+        clf.fit(X, Y)
 
     def predict(self, text):
         """
@@ -44,7 +53,7 @@ class EnsembleWord2VecClassifier:
                 vector, success = ut.try_word2vec(word)
                 if success:
                     X.append(vector)
-                    Y.append(row[row.columns[1:]])
+                    Y.append(row[1:].to_numpy())
 
         return X, Y
 

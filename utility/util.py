@@ -175,6 +175,15 @@ def download_gdrive_file(file_id, output_file_path):
 
     __save_response_content__(response, output_file_path)
 
+def whats(thing) :
+    """
+    Prints the type of object passed in
+    Parameters:
+        thing (Object): The object for which the type needs to be printed
+    """
+
+    print(type(thing))
+
 def reduce_mem_usage(df, verbose=True):
     """
     Takes a dataframe and returns one that takes the least memory possible.
