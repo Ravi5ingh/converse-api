@@ -1,4 +1,4 @@
-query,is_credit_limit,is_fraud,is_freeze_card
+query,intent_credit_limit,intent_fraud,intent_freeze_card
 what is my credit limit,1,0,0
 can you please increase my credit limit,1,0,0
 can you increase my credit limit,1,0,0
