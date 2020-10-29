@@ -24,20 +24,29 @@ class EnsembleWord2VecClassifier:
 
         X, Y = self.__vectorize__()
 
-        clf = nn.MLPClassifier(hidden_layer_sizes=(2),
+        self.__classifier__ = nn.MLPClassifier(hidden_layer_sizes=(2),
                                      random_state=1,
                                      max_iter=10000)
 
         X = np.array(X)
         Y = np.array(Y, dtype=np.float)
 
-        clf.fit(X, Y)
+        self.__classifier__.fit(X, Y)
 
     def predict(self, text):
         """
         Given a piece of raw text, infer the intent of the user
         :return: The intent code
         """
+
+        votes = [0, 0, 0]
+        for word in self.__tokenize_text__(text):
+            vector, success = ut.try_word2vec(word)
+            if success:
+                class_prob = self.__classifier__.predict_proba([vector])
+                votes[np.argmax(class_prob)] += 1
+
+        return self.__train_df__.columns[np.argmax(votes) + 1]
 
     def __vectorize__(self):
         """
