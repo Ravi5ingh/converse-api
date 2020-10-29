@@ -6,7 +6,7 @@ import numpy as np
 
 class EnsembleWord2VecClassifier:
     """
-    This is a simple classifier that combines word2vec, neural networks, and an ensemble technique (weighted voting)
+    This is a simple classifier that combines word2vec, neural networks, and an ensemble technique
     """
 
     def __init__(self, train_csv):
