@@ -1,4 +1,5 @@
 .idea/
 venv/
+conda_venv/
 __pycache__/
 GoogleWord2VecModel.bin
