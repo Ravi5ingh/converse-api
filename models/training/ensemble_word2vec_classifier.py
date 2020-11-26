@@ -1,7 +1,7 @@
 import utility.util as ut
 import sklearn.neural_network as nn
 import models.nl.processor as nl
-import pipetools as pt
+# import pipetools as pt
 import numpy as np
 
 class EnsembleWord2VecClassifier:
@@ -73,8 +73,13 @@ class EnsembleWord2VecClassifier:
         :return: The tokenized text
         """
 
-        return (pt.pipe
-                | nl.normalize_text
-                | nl.tokenize_text
-                | nl.remove_stopwords
-                | nl.lemmatize_text)(text)
+        # return (pt.pipe
+        #         | nl.normalize_text
+        #         | nl.tokenize_text
+        #         | nl.remove_stopwords
+        #         | nl.lemmatize_text)(text)
+
+        ret_val = nl.normalize_text(text)
+        ret_val = nl.tokenize_text(ret_val)
+        ret_val = nl.remove_stopwords(ret_val)
+        return nl.lemmatize_text(ret_val)

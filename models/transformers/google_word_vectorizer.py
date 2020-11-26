@@ -1,7 +1,7 @@
 import utility.util as ut
 import numpy as np
 import sklearn.feature_extraction.text as te
-import pipetools as pt
+# import pipetools as pt
 import models.nl.processor as nl
 
 class GoogleWordVectorizer(te.BaseEstimator):
@@ -90,8 +90,13 @@ class GoogleWordVectorizer(te.BaseEstimator):
         :return: The tokenized query
         """
 
-        return (pt.pipe
-                | nl.normalize_text
-                | nl.tokenize_text
-                | nl.remove_stopwords
-                | nl.lemmatize_text)(query)
+        # return (pt.pipe
+        #         | nl.normalize_text
+        #         | nl.tokenize_text
+        #         | nl.remove_stopwords
+        #         | nl.lemmatize_text)(query)
+
+        ret_val = nl.normalize_text(query)
+        ret_val = nl.tokenize_text(ret_val)
+        ret_val = nl.remove_stopwords(ret_val)
+        return nl.lemmatize_text(ret_val)
